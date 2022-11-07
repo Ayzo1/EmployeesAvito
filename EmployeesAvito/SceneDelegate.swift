@@ -18,16 +18,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		// This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 		
 		guard let windowScene = (scene as? UIWindowScene) else { return }
-		let employeesViewController: EmployeesViewProtocol = EmployeesViewController()
-		ServiceLocator.shared.register(service: employeesViewController)
+		let employeesViewController = EmployeesViewController()
+		let view: EmployeesViewProtocol = employeesViewController
+		let naivgationController = UINavigationController(rootViewController: employeesViewController)
+		ServiceLocator.shared.register(service: view)
 		registerDependencies()
 		window = UIWindow(frame: windowScene.coordinateSpace.bounds)
 		window?.windowScene = windowScene
-		window?.rootViewController = EmployeesViewController()
+		window?.rootViewController = naivgationController
 		window?.makeKeyAndVisible()
 	}
 	
 	private func registerDependencies() {
+		let saver: SaverProtocol = UserDefaultsSaver()
+		ServiceLocator.shared.register(service: saver)
+		let cacheService: CacheServiceProtocol = CacheService()
+		ServiceLocator.shared.register(service: cacheService)
 		let requestSender: RequestSenderProtocol = RequestSender()
 		ServiceLocator.shared.register(service: requestSender)
 		let networkingService: NetworkingServiceProtocol = NetworkingService()

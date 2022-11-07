@@ -11,5 +11,7 @@ protocol EmployeesPresenterProtocol {
 	
 	func getCompaniesCount() -> Int
 	func getEmployeesCount(for conmpanyIndex: Int) -> Int
-	func getEmployee(for conmpanyIndex: Int, employeeIndex: Int) -> Employee
+	func getEmployee(for conmpanyIndex: Int, employeeIndex: Int) -> Employee?
+	func getCompanyName() -> String?
+	func updateCompany()
 }

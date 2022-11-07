@@ -29,7 +29,7 @@ final class NetworkingService: NetworkingServiceProtocol {
 			return
 		}
 		
-		let parser = CompanyParser()
+		let parser = ResonseParser()
 		let request = CompaniesRequest()
 		let config = RequestConfiguration(request: request, parser: parser)
 		

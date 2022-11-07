@@ -15,8 +15,9 @@ final class EmployeesPresenter: EmployeesPresenterProtocol {
 	
 	// MARK: - Private properties
 	
-	private var companies: [Company] = [Company]()
+	private var company: Company?
 	private var networkingService: NetworkingServiceProtocol?
+	private var cacheService: CacheServiceProtocol?
 	
 	// MARK: - init
 	
@@ -29,34 +30,57 @@ final class EmployeesPresenter: EmployeesPresenterProtocol {
 			return
 		}
 		self.networkingService = networkingService
-		getCompanies()
+		guard let cacheService: CacheServiceProtocol = ServiceLocator.shared.resolve() else {
+			return
+		}
+		self.cacheService = cacheService
+		getCompany()
 	}
 	
 	// MARK: - EmployeesPresenterProtocol
 	
 	func getCompaniesCount() -> Int {
-		return companies.count
+		return company != nil ? 1 : 0
 	}
 	
 	func getEmployeesCount(for conmpanyIndex: Int) -> Int {
-		return companies[conmpanyIndex].employees.count
+		return company?.employees.count ?? 0
 	}
 	
-	func getEmployee(for conmpanyIndex: Int, employeeIndex: Int) -> Employee {
-		return companies[conmpanyIndex].employees[employeeIndex]
+	func getEmployee(for conmpanyIndex: Int, employeeIndex: Int) -> Employee? {
+		return company?.employees[employeeIndex]
+	}
+	
+	func getCompanyName() -> String? {
+		company?.name
+	}
+	
+	func updateCompany() {
+		downloadCompany()
 	}
 	
 	// MARK: - Private methods
 	
-	private func getCompanies() {
+	private func getCompany() {
+		company = cacheService?.getCompany()
+		view?.updateData()
+		downloadCompany()
+	}
+	
+	private func downloadCompany() {
 		guard let networkingService = networkingService else {
 			return
 		}
 		
 		networkingService.fetchCompanies { [weak self] (result) in
 			switch result {
-				case .success(let company):
-					self?.companies.append(company.company)
+				case .success(let response):
+					var downloadedCompany = response.company
+					downloadedCompany.employees.sort(by: { (e1, e2) -> Bool in
+						e1.name < e2.name
+					})
+					self?.company = downloadedCompany
+					self?.cacheService?.cacheCompany(company: downloadedCompany)
 					self?.view?.updateData()
 			case .failure(let error):
 				self?.prepareError(error: error)
@@ -71,7 +95,8 @@ final class EmployeesPresenter: EmployeesPresenterProtocol {
 		
 		switch error {
 			case .fetchError:
-				break
+				view?.updateData()
+				view?.showError(message: "Нет интернета")
 			case .parseError:
 				break
 			case .urlError:

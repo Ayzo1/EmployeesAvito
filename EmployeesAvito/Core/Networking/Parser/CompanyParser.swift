@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CompanyParser: ParserProtocol {
+final class ResonseParser: ParserProtocol {
 	
 	typealias Model = Response
 	
