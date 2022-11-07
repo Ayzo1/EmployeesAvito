@@ -16,40 +16,39 @@ class EmployeeCollectionViewCell: UICollectionViewCell {
 	private lazy var roundedView: UIView = {
 		let view = UIView()
 		view.translatesAutoresizingMaskIntoConstraints = false
-		view.backgroundColor = Colors.secondBackgroundColor
-		view.layer.cornerRadius = 20
+		view.backgroundColor = Constants.secondBackgroundColor
+        view.layer.cornerRadius = Constants.cornerRadius
 		return view
 	}()
 	
 	private lazy var nameLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = .systemFont(ofSize: 20, weight: .bold)
-		label.textColor = Colors.textColor
+        label.font = Constants.bigTextFont
+		label.textColor = Constants.textColor
 		return label
 	}()
 	
 	private lazy var numberLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = .systemFont(ofSize: 16, weight: .regular)
-		label.textColor = Colors.secondTextColor
+        label.font = Constants.textFont
+		label.textColor = Constants.secondTextColor
 		return label
 	}()
 	
 	private lazy var skillsView: UIView = {
 		let view = UIView()
 		view.translatesAutoresizingMaskIntoConstraints = false
-		// view.backgroundColor = .white
-		view.layer.cornerRadius = 20
+        view.layer.cornerRadius = Constants.cornerRadius
 		return view
 	}()
 	
 	private lazy var skillsTitleLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = .systemFont(ofSize: 20, weight: .bold)
-		label.textColor = Colors.textColor
+        label.font = Constants.bigTextFont
+		label.textColor = Constants.textColor
 		label.textAlignment = .center
 		return label
 	}()
@@ -57,8 +56,8 @@ class EmployeeCollectionViewCell: UICollectionViewCell {
 	private lazy var skillsLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = .systemFont(ofSize: 16, weight: .medium)
-		label.textColor = Colors.secondTextColor
+        label.font = Constants.textFont
+		label.textColor = Constants.secondTextColor
 		label.numberOfLines = 0
 		label.lineBreakMode = .byWordWrapping
 		label.textAlignment = .center
@@ -81,6 +80,12 @@ class EmployeeCollectionViewCell: UICollectionViewCell {
 		setupSkillsTitleLabel()
 		setupSkillsLabel()
 	}
+    
+    override func prepareForReuse() {
+        nameLabel.text = ""
+        numberLabel.text = ""
+        skillsLabel.text = ""
+    }
 	
 	// MARK: - Private methods
 	
@@ -96,8 +101,6 @@ class EmployeeCollectionViewCell: UICollectionViewCell {
 	}
 	
 	private func addShadowToRoundedView() {
-		let roundedRectPath = CGPath(roundedRect: roundedView.bounds, cornerWidth: 20, cornerHeight: 20, transform: nil)
-		roundedView.layer.shadowPath = roundedRectPath
 		roundedView.layer.shadowColor = UIColor.black.cgColor
 		roundedView.layer.shadowOpacity = 0.5
 		roundedView.layer.shadowOffset = CGSize(width: 0, height: 10)
